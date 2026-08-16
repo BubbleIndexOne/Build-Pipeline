@@ -24,7 +24,7 @@ jobs:
           node-version: 20
 
       - run: npm install
-      - run: npm run build -- --base "/${{ github.event.repository.name }}/"
+      - run: npm run build -- --base "${{ inputs.base_path }}"
 
       - run: npm install -g wrangler
       - name: Deploy
