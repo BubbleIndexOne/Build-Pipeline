@@ -7,6 +7,10 @@ on:
       environment:
         required: true
         type: string
+      base_path:
+        required: false
+        type: string
+        default: ""
     secrets:
       CF_API_TOKEN:
         required: true
@@ -17,14 +21,21 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4   # checks out the CALLING repo, no PAT needed
+      - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
           node-version: 20
 
       - run: npm install
-      - run: npm run build -- --base "${{ inputs.base_path }}"
+      
+      - name: Build Project
+        run: |
+          if [ -n "${{ inputs.base_path }}" ]; then
+            npm run build -- --base "${{ inputs.base_path }}"
+          else
+            npm run build
+          fi
 
       - run: npm install -g wrangler
       - name: Deploy
